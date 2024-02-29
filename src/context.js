@@ -19,6 +19,7 @@ const initialState = {
   nbPages: 0,
 };
 
+console.log(initialState);
 const AppContext = React.createContext();
 
 const AppProvider = ({ children }) => {
@@ -29,10 +30,17 @@ const AppProvider = ({ children }) => {
     try {
       const response = await fetch(url);
       const data = await response.json();
-      dispatch({ type: SET_STORIES });
+      dispatch({
+        type: SET_STORIES,
+        payload: { hits: data.hits, nbPages: data.nbPages },
+      });
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const removeStory = (id) => {
+    dispatch({ type: REMOVE_STORY, payload: id });
   };
 
   useEffect(() => {
@@ -43,6 +51,7 @@ const AppProvider = ({ children }) => {
     <AppContext.Provider
       value={{
         ...state,
+        removeStory,
       }}
     >
       {children}
